@@ -1,17 +1,17 @@
 const express = require("express");
 const app = express();
-const config = require('./config/app')
+const config = require("./config/app");
+const bodyParser = require("body-parser");
+const router = require("./router/");
 
-app.get("/home", (req, res) => {
-  return res.send("home");
-});
-
-app.get("/login", (req, res) => {
-    return res.send("login k");
-  });
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 
-const port = config.appPort
+app.use(router);
+
+const port = config.appPort;
+
 app.listen(port, () => {
   console.log(`Server listening to port ${port}`);
 });
