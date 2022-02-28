@@ -1,11 +1,22 @@
-
-import './App.css';
+import Login from "./components/Auth/Login";
+import NotFound from "./components/NotFound";
+import Register from "./components/Auth/Register";
+import Chat from "./components/Chat/Chat";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import "./App.css";
 
 function App() {
   return (
-    <div className="App">
-    <h1>hello</h1>
-    </div>
+    <Router>
+      <div className="App">
+        <Switch>
+          <Route path="/" exact component={Chat} />
+          <Route path="/register" exact component={Register} />
+          <Route path="/login" exact component={Login} />
+          <Route component={NotFound} />
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
