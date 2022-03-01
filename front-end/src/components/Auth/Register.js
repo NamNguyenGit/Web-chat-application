@@ -34,7 +34,7 @@ const Register = () => {
                 </div>
                 <button>Yay</button>
                 <Link to="/login">
-                  <p>Back To Loginn</p>
+                  <p>Back To Login</p>
                 </Link>
               </form>
             </div>
