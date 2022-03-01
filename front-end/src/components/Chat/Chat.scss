@@ -1,0 +1,21 @@
+@import '../../assets/scss/variables';
+
+.chat__container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 100%;
+    margin: 0 !important;
+    background: $bg-grey;
+
+    &__wrap {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        overflow: hidden;
+        padding: 2rem 1rem;
+    }
+}
