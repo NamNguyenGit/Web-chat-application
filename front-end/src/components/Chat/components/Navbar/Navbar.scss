@@ -1,4 +1,4 @@
-@import '../../../../assets/scss/variables';
+@import "../../../../assets/scss/variables";
 
 .navbar {
     display: flex;
@@ -13,17 +13,39 @@
         color: $white;
     }
     &__profile__menu {
-       display: flex;
-       justify-content: flex-end;
-       align-items: center;
-       height: 100%;
-       position: relative;
-       cursor: pointer; 
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        height: 100%;
+        position: relative;
+        cursor: pointer;
+        img {
+            display: flex;
+            align-self: center;
+            margin-right: 0.5rem;
+            width: 50%;
+            height: 50%;
+        }
+        &__text {
+            display: flex;
+            align-self: center;
+            color: $white;
+        }
+    }
 
-       p {
-           display: flex;
-           align-self: center;
-           color: $white;
-       }
+    &__profile__dropdown {
+        position: absolute;
+        top: 5rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        right: 0.5rem;
+        border: 0.1rem solid $grey;
+        background: $white;
+        z-index: 9999;
+
+        &__text {
+            margin: 1rem 0.5rem;
+            font-weight: 600;
+        }
     }
 }

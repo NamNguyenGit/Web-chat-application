@@ -20,7 +20,7 @@ const Login = ({history}) => {
     e.preventDefault();
 
     dispatch(login({email,password}, history))
-
+   
     
   };
 
