@@ -1,27 +1,25 @@
-import AuthService from "../../services/authService"
-export const LOGIN = 'LOGIN'
-export const REGISTER = 'REGISTER'
+import AuthService from "../../services/authService";
+export const LOGIN = "LOGIN";
+export const REGISTER = "REGISTER";
 
-export const login = (params, history) => dispatch => {
-    return AuthService.login(params)
-    .then(data=>{
-       console.log(data)
-        dispatch({type: LOGIN, payload:data.user})
-        history.push('/')
+export const login = (params, history) => (dispatch) => {
+  return AuthService.login(params)
+    .then((data) => {
+      console.log(data);
+      dispatch({ type: LOGIN, payload: data.user });
+      history.push("/");
     })
-    .catch(err => {
-        
-    })
-}
+    .catch((err) => {});
+};
 
-export const register = (params, history) => dispatch => {
-    return AuthService.register(params)
-    .then(data=>{
-       console.log(data)
-        dispatch({type: REGISTER, payload:data.user})
-        history.push('/')
+export const register = (params, history) => (dispatch) => {
+  return AuthService.register(params)
+    .then((data) => {
+      console.log(data);
+      dispatch({ type: REGISTER, payload: data.user });
+      history.push("/");
     })
-    .catch(err => {
-        
-    })
-}
+    .catch((err) => {
+      console.log(err);
+    });
+};
