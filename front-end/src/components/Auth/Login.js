@@ -2,10 +2,12 @@ import loginImage from "../../assets/images/login.svg";
 import "./Auth.scss";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import AuthService from "../../services/authService";
+import {useDispatch} from "react-redux"
+import {login} from "../../store/actions/auth"
 
-const Login = () => {
- 
+const Login = ({history}) => {
+
+  const dispatch = useDispatch()
 
   const [state,setState] = useState({
     email: "nam@gmail.com",
@@ -17,10 +19,9 @@ const Login = () => {
   const clickSubmit = (e) => {
     e.preventDefault();
 
-    AuthService.login({email,password})
-    .then(res=>{
-        console.log(res)
-    })
+    dispatch(login({email,password}, history))
+
+    
   };
 
   const handleChange = (name) => e => {
