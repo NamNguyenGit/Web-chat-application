@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import Navbar from "./components/Navbar/Navbar";
+import useSocket from "./hooks/socketConnect";
 import "./Chat.scss";
 import { useEffect } from "react";
 import { fetchChats } from "../../store/actions/chat";
@@ -11,10 +12,12 @@ const Chat = () => {
 
   const user = useSelector((state) => state.authReducer.user);
 
+  useSocket(user, dispatch);
+
   useEffect(() => {
     dispatch(fetchChats())
       .then((res) => console.log(res))
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }, [dispatch]);
 
   return (
