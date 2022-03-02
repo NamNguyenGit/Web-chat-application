@@ -5,6 +5,9 @@
     display: flex;
     text-align: left;
     margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     h3 {
         margin: 0 10px 0 0;
@@ -37,4 +40,14 @@
         }
 
     }
+
+    #settings {
+        p {
+            margin-left: .3rem !important;
+            font-size: 1rem;
+        }
+    }
+
+    
+
 }
