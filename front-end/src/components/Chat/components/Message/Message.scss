@@ -1,47 +1,104 @@
 @import '../../../../assets/scss/variables';
 
-.creator {
-    justify-content: flex-end;
-}
+#messenger {
+    justify-content: space-between;
+    padding: 15px;
+    flex-grow: 2;
+    background-color: white;
 
-.mb-5 {
-    margin-bottom: 5px;
-}
+    #messenger-wrap {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        position: relative;
 
-.mb-10 {
-    margin-bottom: 10px;
-}
+        #settings {
+            border-radius: 5px;
+            position: absolute;
+            right: 12px;
+            top: 8px;
+            padding: 5px;
+            border: 1px solid #d9d9d9;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
 
-.message {
-    display: flex;
-    padding-right: 5px;
-    text-align: left;
+            &>div {
+                position: relative;
+                display: flex;
+                align-items: center;
+                padding: 5px;
+                cursor: pointer;
 
-    p {
-        word-wrap: break-word;
-        word-break: break-word;
+                .fa-icon {
+                    position: relative;
+                    font-size: 20px;
+                    color: $bg-main;
+                    margin-right: 5px;
+                    min-width: 20px;
+                }
+            }
+
+            p {
+                margin: 5px 0;
+                color: #000;
+            }
+        }
+
+        &>.fa-icon {
+            font-size: 20px;
+            color: $bg-main;
+            right: 0;
+            position: absolute;
+            top: 0;
+            cursor: pointer;
+        }
     }
 
     &>div {
-        border-radius: 20px;
+        flex-grow: 1;
     }
 
-    .owner {
-        background-color: $bg-main;
-        color: white;
-        padding: 10px;
-    }
-
-    .other-person {
+    input {
+        border: none;
         background-color: #f5f6f8;
         padding: 10px;
     }
 
-    .dots {
-        margin: -5px 0 3px 0;
+    hr {
+        border-top: 1px solid #cfcfcf;
+        width: 100%;
+        margin-bottom: 10px;
     }
 
-    img {
-        max-width: 200px;
+    #delete-chat {
+        background-color: $success;
+        border: none;
+        padding: 5px;
+        width: 70px;
+        color: white;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    #suggestions {
+
+        .suggestion {
+            margin: 10px 0;
+            padding: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            button {
+                background-color: $success;
+                border-radius: 10px;
+                border: none;
+                height: 25px;
+                color: white;
+                cursor: pointer;
+            }
+        }
+
     }
 }
