@@ -1,10 +1,12 @@
 const router = require("express").Router();
-const { index, create } = require("../controllers/chatControllers");
+const { index, create, messages, deleteChat } = require("../controllers/chatControllers");
 const { validate } = require("../validators");
 const {auth} = require('../middleware/auth')
 
 
 router.get("/", [auth], index);
+router.get("/messages", [auth], messages);
 router.post("/create", [auth], create);
+router.delete("/:id", [auth], deleteChat);
 
 module.exports = router;
