@@ -1,6 +1,6 @@
 "use strict";
 const { hash } = require("bcrypt");
-const config = require('../config/app')
+const config = require("../config/app");
 const { Model } = require("sequelize");
 const bcrypt = require("bcrypt");
 
@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsToMany(models.Chat, {
+        through: "ChatUser",
+        foreignKey: "userId",
+      });
+      this.hasMany(models.ChatUser, { foreignKey: "userId" });
     }
   }
   User.init(
@@ -23,20 +28,19 @@ module.exports = (sequelize, DataTypes) => {
       password: DataTypes.STRING,
       gender: DataTypes.STRING,
       avatar: {
-        type:  DataTypes.STRING,
+        type: DataTypes.STRING,
         get() {
-          const avatar = this.getDataValue('avatar')
+          const avatar = this.getDataValue("avatar");
 
-         
-          const url = `${config.appURL}:${config.appPort}`
+          const url = `${config.appURL}:${config.appPort}`;
 
-          if(!avatar) {
-            return `${url}/${this.getDataValue('gender')}.svg`
+          if (!avatar) {
+            return `${url}/${this.getDataValue("gender")}.svg`;
           }
 
-          const id = this.getDataValue('id')
-          return `${url}/user/${id}/${avatar}`
-        }
+          const id = this.getDataValue("id");
+          return `${url}/user/${id}/${avatar}`;
+        },
       },
     },
     {
@@ -44,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "User",
       hooks: {
         beforeCreate: hashPassword,
-        beforeUpdate: hashPassword
+        beforeUpdate: hashPassword,
       },
     }
   );
