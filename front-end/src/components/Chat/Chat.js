@@ -3,6 +3,8 @@ import Navbar from "./components/Navbar/Navbar";
 import "./Chat.scss";
 import { useEffect } from "react";
 import { fetchChats } from "../../store/actions/chat";
+import FriendList from "./components/FriendList/FriendList";
+import Message from "./components/Message/Message";
 
 const Chat = () => {
   const dispatch = useDispatch();
@@ -17,9 +19,12 @@ const Chat = () => {
 
   return (
     <>
-      <div className="chat__container">
+      <div id="chat-container">
         <Navbar />
-        <div className="chat__container__wrap">data</div>
+        <div id="chat-wrap">
+          <FriendList />
+          <Message />
+        </div>
       </div>
     </>
   );
