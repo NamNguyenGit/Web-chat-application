@@ -19,9 +19,9 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: "Email or password is wrong!" });
 
     const userWithToken = generateToken(user.get({ raw: true }));
-   
+
     userWithToken.user.avatar = user.avatar;
-  
+
     return res.send(userWithToken);
   } catch (e) {
     return res.status(500).json({ message: e.message });
