@@ -25,6 +25,11 @@ exports.index = async (req, res) => {
           },
           {
             model: Message,
+            include: [
+              {
+                model: User,
+              },
+            ],
             limit: 20,
             order: [["id", "DESC"]],
           },
@@ -114,53 +119,52 @@ exports.create = async (req, res) => {
 };
 
 exports.messages = async (req, res) => {
-
-  const limit = 10
-  const page = req.query.page || 1
-  const offset = page > 1 ? page * limit : 0
+  const limit = 10;
+  const page = req.query.page || 1;
+  const offset = page > 1 ? page * limit : 0;
 
   const messages = await Message.findAndCountAll({
-      where: {
-          chatId: req.query.id
+    where: {
+      chatId: req.query.id,
+    },
+    include: [
+      {
+        model: User,
       },
-      include: [
-          {
-              model: User
-          }
-      ],
-      limit,
-      offset,
-      order: [['id', 'DESC']]
-  })
+    ],
+    limit,
+    offset,
+    order: [["id", "DESC"]],
+  });
 
-  const totalPages = Math.ceil(messages.count / limit)
+  const totalPages = Math.ceil(messages.count / limit);
 
-  if (page > totalPages) return res.json({ data: { messages: [] } })
+  if (page > totalPages) return res.json({ data: { messages: [] } });
 
   const result = {
-      messages: messages.rows,
-      pagination: {
-          page,
-          totalPages
-      }
-  }
+    messages: messages.rows,
+    pagination: {
+      page,
+      totalPages,
+    },
+  };
 
-  return res.json(result)
+  return res.json(result);
+};
 
-}
-
-exports.deleteChat = async (req,res) => {
-
+exports.deleteChat = async (req, res) => {
   try {
     await Chat.destroy({
       where: {
-        id: req.params.id
-      }
-    })
+        id: req.params.id,
+      },
+    });
 
-    return res.json({status: 'Success', messages: 'Chat delete successfully' })
+    return res.json({
+      status: "Success",
+      messages: "Chat delete successfully",
+    });
   } catch (e) {
-    return res.status(500).json({status: 'Error', messages: e.message })
+    return res.status(500).json({ status: "Error", messages: e.message });
   }
-
-}
+};
