@@ -48,4 +48,27 @@
             font-weight: 600;
         }
     }
+    &__form {
+        &__input__field {
+            input,
+            select {
+                height: 4rem;
+                width: 100%;
+                box-sizing: border-box;
+                border-radius: 0.4rem;
+            }
+
+            &__btn {
+                background-color: $success !important;
+                border: none;
+                padding: 0.5rem;
+                width: 10rem;
+                color: $white;
+                border-radius: 1rem;
+                cursor: pointer;
+                font-weight: 600;
+                height: 3rem;
+            }
+        }
+    }
 }
