@@ -25,6 +25,8 @@
             margin-right: 0.5rem;
             width: 50%;
             height: 50%;
+            border-radius: 50%;
+            object-fit: cover;
         }
         &__text {
             display: flex;

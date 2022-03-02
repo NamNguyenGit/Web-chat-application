@@ -4,6 +4,7 @@ import { RiArrowDownSFill } from "react-icons/ri";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../../store/actions/auth";
 import Modal from "../../../Modal/Modal";
+import { updateProfile } from "../../../../store/actions/auth";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ const Navbar = () => {
   
 
   const { firstName, lastName, gender, email, password } = state;
+ 
 
   const handleChange = (name) => (e) => {
     setState({
@@ -43,13 +45,16 @@ const Navbar = () => {
   const clickSubmit = (e) => {
     e.preventDefault();
 
-    const form = {firstName, lastName, gender, email, password , avatar}
+    const form = {firstName, lastName, gender, email , avatar}
+    if(password.length > 0) form.password = password
     const formData = new FormData()
     for(const key in form) {
       formData.append(key, form[key])
     }
 
     //dispatch action
+    dispatch(updateProfile(formData)).then(() => setShowProfile(false))
+
   };
 
   return (

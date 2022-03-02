@@ -43,7 +43,7 @@ exports.userFile = ((req,res,next) => {
                         cb(error,dest)
                     })
                 } else {
-                    fs.readdir(dest, (error,file) => {
+                    fs.readdir(dest, (error,files) => {
                         if(error) throw error
                         for(const file of files) {
                             fs.unlink(path.join(dest,file),error => {
