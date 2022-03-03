@@ -7,40 +7,39 @@ const { Op } = require("sequelize");
 const { sequelize } = require("../models");
 
 exports.index = async (req, res) => {
-
   const user = await User.findOne({
-      where: {
-          id: req.user.id
-      },
-      include: [
+    where: {
+      id: req.user.id,
+    },
+    include: [
+      {
+        model: Chat,
+        include: [
           {
-              model: Chat,
-              include: [
-                  {
-                      model: User,
-                      where: {
-                          [Op.not]: {
-                              id: req.user.id
-                          }
-                      }
-                  },
-                  {
-                      model: Message,
-                      include: [
-                          {
-                              model: User
-                          }
-                      ],
-                      limit: 20,
-                      order: [['id', 'DESC']]
-                  }
-              ]
-          }
-      ]
-  })
+            model: User,
+            where: {
+              [Op.not]: {
+                id: req.user.id,
+              },
+            },
+          },
+          {
+            model: Message,
+            include: [
+              {
+                model: User,
+              },
+            ],
+            limit: 20,
+            order: [["id", "DESC"]],
+          },
+        ],
+      },
+    ],
+  });
 
-  return res.json(user.Chats)
-}
+  return res.json(user.Chats);
+};
 
 exports.create = async (req, res) => {
   const { partnerId } = req.body;
@@ -119,39 +118,46 @@ exports.create = async (req, res) => {
   }
 };
 exports.messages = async (req, res) => {
-
-  const limit = 10
-  const page = req.query.page || 1
-  const offset = page > 1 ? page * limit : 0
+  const limit = 10;
+  const page = req.query.page || 1;
+  const offset = page > 1 ? page * limit : 0;
 
   const messages = await Message.findAndCountAll({
-      where: {
-          chatId: req.query.id
+    where: {
+      chatId: req.query.id,
+    },
+    include: [
+      {
+        model: User,
       },
-      include: [
-          {
-              model: User
-          }
-      ],
-      limit,
-      offset,
-      order: [['id', 'DESC']]
-  })
+    ],
+    limit,
+    offset,
+    order: [["id", "DESC"]],
+  });
 
-  const totalPages = Math.ceil(messages.count / limit)
+  const totalPages = Math.ceil(messages.count / limit);
 
-  if (page > totalPages) return res.json({ data: { messages: [] } })
+  if (page > totalPages) return res.json({ data: { messages: [] } });
 
   const result = {
-      messages: messages.rows,
-      pagination: {
-          page,
-          totalPages
-      }
+    messages: messages.rows,
+    pagination: {
+      page,
+      totalPages,
+    },
+  };
+
+  return res.json(result);
+};
+
+exports.imageUpload = (req, res) => {
+  if (req.file) {
+    return res.json({ url: req.file.filename });
   }
 
-  return res.json(result)
-}
+  return res.status(500).json("No image uploaded");
+};
 
 exports.deleteChat = async (req, res) => {
   try {
