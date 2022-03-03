@@ -6,7 +6,8 @@ import {
   onlineFriend,
   offlineFriend,
   setSocket,
-  receivedMessage
+  receivedMessage,
+  senderTyping,
 } from "../../../store/actions/chat";
 
 function useSocket(user, dispatch) {
@@ -19,8 +20,8 @@ function useSocket(user, dispatch) {
 
         socket.emit("join", user);
 
-        socket.on("typing", (user) => {
-          console.log("event", user);
+        socket.on("typing", (sender) => {
+          dispatch(senderTyping(sender))
         });
 
         socket.on("friends", (friends) => {

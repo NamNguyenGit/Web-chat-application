@@ -18,6 +18,23 @@ const MessageInput = ({ chat }) => {
     const value = e.target.value;
     setMessage(value);
 
+    const receiver = {
+      chatId: chat.id,
+      fromUser: user,
+      toUserId:  chat.Users.map((user) => user.id),
+
+    }
+
+    if(value.length === 1) {
+      receiver.typing = true
+      socket.emit("typing", receiver)
+    }
+
+    if(value.length === 0) {
+      receiver.typing = false
+      socket.emit("typing", receiver)
+    }
+
     
   };
 

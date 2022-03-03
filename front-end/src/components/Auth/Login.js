@@ -10,7 +10,7 @@ const Login = ({history}) => {
   const dispatch = useDispatch()
 
   const [state,setState] = useState({
-    email: "hai@gmail.com",
+    email: "john.doe@gmail.com",
     password: "secret"
   })
 

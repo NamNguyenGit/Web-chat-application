@@ -1,11 +1,9 @@
 const socketIo = require("socket.io");
 const { sequelize } = require("../models");
-const Message = require('../models').Message
+const Message = require("../models").Message;
 
 const users = new Map();
-const userSockets = new Map()
-
-
+const userSockets = new Map();
 
 const SocketServer = (server) => {
   const io = socketIo(server);
@@ -19,11 +17,11 @@ const SocketServer = (server) => {
         existingUser.sockets = [...existingUser.sockets, ...[socket.id]];
         users.set(user.id, existingUser);
         sockets = [...existingUser.sockets, ...[socket.id]];
-        userSockets.set(socket.id, user.id)
+        userSockets.set(socket.id, user.id);
       } else {
         users.set(user.id, { id: user.id, sockets: [socket.id] });
         sockets.push(socket.id);
-        userSockets.set(socket.id, user.id)
+        userSockets.set(socket.id, user.id);
       }
 
       const onlineFriends = []; //ids
@@ -56,59 +54,64 @@ const SocketServer = (server) => {
       io.to(socket.id).emit("typing", "User typing...");
     });
 
-    socket.on("message", async (message) => {
-      let sockets = []
-
-      if(users.has(message.fromUser.id)) {
-        sockets = users.get(message.fromUser.id).sockets
-      }
-
+    socket.on('typing', (message) => {
       message.toUserId.forEach(id => {
-        if(users.has(id)) {
-          sockets = [...sockets, ...users.get(id).sockets]
+        if (users.has(id)) {
+          users.get(id).sockets.forEach(socket => {
+            io.to(socket).emit('typing', message)
+          })
         }
       })
+    })
+
+    socket.on("message", async (message) => {
+      let sockets = [];
+
+      if (users.has(message.fromUser.id)) {
+        sockets = users.get(message.fromUser.id).sockets;
+      }
+
+      message.toUserId.forEach((id) => {
+        if (users.has(id)) {
+          sockets = [...sockets, ...users.get(id).sockets];
+        }
+      });
 
       try {
         const msg = {
           type: message.type,
-          fromUserId : message.fromUser.id,
+          fromUserId: message.fromUser.id,
           chatId: message.chatId,
-          message: message.message
-        }
+          message: message.message,
+        };
 
-        const saveMessage = await Message.create(msg)
-        message.User = message.fromUser
-        message.fromUserId = message.fromUser.id
-        message.id = saveMessage.id
-        message.message = saveMessage.message
-        delete message.fromUser
-        sockets.forEach(socket => {
-          io.to(socket).emit('received',message)
-        })
-      } catch (e) {
-        
-      }
-    })
+        const saveMessage = await Message.create(msg);
+        message.User = message.fromUser;
+        message.fromUserId = message.fromUser.id;
+        message.id = saveMessage.id;
+        message.message = saveMessage.message;
+        delete message.fromUser;
+        sockets.forEach((socket) => {
+          io.to(socket).emit("received", message);
+        });
+      } catch (e) {}
+    });
 
-    socket.on('disconnect', async () => {
+    socket.on("disconnect", async () => {
+      if (userSockets.has(socket.id)) {
+        const user = users.get(userSockets.get(socket.id));
 
+        if (user.sockets.length > 1) {
+          user.sockets = user.sockets.filter((sock) => {
+            if (sock !== socket.id) return true;
 
-      if(userSockets.has(socket.id)) {
-        const user = users.get(userSockets.get(socket.id))
+            userSockets.delete(sock);
+            return false;
+          });
 
-        if(user.sockets.length > 1) {
-          user.sockets = user.sockets.filter(sock => {
-            if(sock !== socket.id) return true
-
-            userSockets.delete(sock)
-            return false
-          })
-
-          users.set(user.id,user)
+          users.set(user.id, user);
         } else {
-
-          const chatters = await getChatters(user.id)
+          const chatters = await getChatters(user.id);
 
           for (let i = 0; i < chatters.length; i++) {
             if (users.has(chatters[i])) {
@@ -117,18 +120,14 @@ const SocketServer = (server) => {
                   io.to(socket).emit("offline", user);
                 } catch (e) {}
               });
-            
             }
           }
 
-          userSockets.delete(socket.id)
-          users.delete(user.id)
+          userSockets.delete(socket.id);
+          users.delete(user.id);
         }
       }
-
-      
-
-    })
+    });
   });
 };
 
@@ -145,9 +144,7 @@ const getChatters = async (userId) => {
         )
       ) as cjoin on cjoin.id = "cu"."chatId"
       where "cu"."userId" != ${parseInt(userId)}
-    `)
-
-   
+    `);
 
     return results.length > 0 ? results.map((el) => el.userId) : [];
   } catch (e) {
