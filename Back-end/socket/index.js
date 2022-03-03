@@ -15,9 +15,9 @@ const SocketServer = (server) => {
 
       if (users.has(user.id)) {
         const existingUser = users.get(user.id);
-        existingUser.sockets = [...existingUser.socket, ...[socket.id]];
+        existingUser.sockets = [...existingUser.sockets, ...[socket.id]];
         users.set(user.id, existingUser);
-        sockets = [...existingUser.socket, ...[socket.id]];
+        sockets = [...existingUser.sockets, ...[socket.id]];
         userSockets.set(socket.id, user.id)
       } else {
         users.set(user.id, { id: user.id, sockets: [socket.id] });
