@@ -33,17 +33,17 @@ module.exports = {
 
     await Message.bulkCreate([
       {
-        message: 'hello',
+        message: 'hello baby one more time',
         chatId: chat.id,
         fromUserId: users[0].id
       },
       {
-        message: 'goodbye',
+        message: 'goodbye baby one more time',
         chatId: chat.id,
         fromUserId: users[1].id
       },
       {
-        message: 'long time no see',
+        message: 'long time no see baby one more time',
         chatId: chat.id,
         fromUserId: users[1].id
       },

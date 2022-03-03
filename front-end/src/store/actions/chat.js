@@ -5,25 +5,28 @@ export const SET_CURRENT_CHAT = "SET_CURRENT_CHAT";
 export const FRIENDS_ONLINE = "FRIENDS_ONLINE";
 export const FRIEND_ONLINE = "FRIEND_ONLINE";
 export const FRIEND_OFFLINE = "FRIEND_OFFLINE";
+export const SET_SOCKET = "SET_SOCKET";
+export const RECEIVED = "RECEIVED";
 
 
 export const fetchChats = () => dispatch => {
-  return ChatServices.fetchChats()
-  .then(data => {
-      data.forEach(chat => {
-          chat.Users.forEach(user => {
-              user.status = 'offline'
-          })
-          chat.Messages.reverse()
-      })
+    return ChatServices.fetchChats()
+        .then(data => {
+            data.forEach(chat => {
+                chat.Users.forEach(user => {
+                    user.status = 'offline'
+                })
+                chat.Messages.reverse()
+            })
 
-      dispatch({ type: FETCH_CHATS, payload: data })
-      return data
-  })
-  .catch(err => {
-      throw err
-  })
+            dispatch({ type: FETCH_CHATS, payload: data })
+            return data
+        })
+        .catch(err => {
+            throw err
+        })
 }
+
 
 export const setCurrentChat = (chat) => dispatch => {
     dispatch({type: SET_CURRENT_CHAT, payload: chat})
@@ -39,4 +42,12 @@ export const onlineFriend = (friend) => dispatch => {
 
 export const offlineFriend = (friend) => dispatch => {
     dispatch({type: FRIEND_OFFLINE, payload: friend})
+}
+
+export const setSocket = (socket) => dispatch => {
+    dispatch({type: SET_SOCKET, payload: socket})
+}
+
+export const receivedMessage = (message,userId) => dispatch => {
+    dispatch({type: RECEIVED, payload: {message,userId} })
 }

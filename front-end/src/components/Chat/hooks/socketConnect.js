@@ -1,31 +1,50 @@
 import { useEffect } from "react";
 import socketIOClient from "socket.io-client";
-import { onlineFriends } from "../../../store/actions/chat"
+import {
+  fetchChats,
+  onlineFriends,
+  onlineFriend,
+  offlineFriend,
+  setSocket,
+  receivedMessage
+} from "../../../store/actions/chat";
 
 function useSocket(user, dispatch) {
   useEffect(() => {
-    const socket = socketIOClient.connect("http://127.0.0.1:3000");
+    dispatch(fetchChats())
+      .then((res) => {
+        const socket = socketIOClient.connect("http://127.0.0.1:3000");
 
-    socket.emit("join", user);
+        dispatch(setSocket(socket))
 
-    socket.on("typing", (user) => {
-      console.log("event", user);
-    });
+        socket.emit("join", user);
 
-    socket.on("friends", (friends) => {
-      console.log("friends", friends);
-      dispatch(onlineFriends(friends))
-    });
+        socket.on("typing", (user) => {
+          console.log("event", user);
+        });
 
-    socket.on("online", (user) => {
-      console.log("online", user);
-    });
+        socket.on("friends", (friends) => {
+          console.log("friends", friends);
+          dispatch(onlineFriends(friends));
+        });
 
-    socket.on("offline", (user) => {
-      console.log("offline", user);
-    });
+        socket.on("online", (user) => {
+          dispatch(onlineFriend(user));
+          console.log("online", user);
+        });
 
+        socket.on("offline", (user) => {
+          dispatch(offlineFriend(user));
+          console.log("offline", user);
+        });
 
+        socket.on('received', (message) => {
+          dispatch(receivedMessage(message,user.id))
+        })
+
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
   }, [dispatch]);
 }
 export default useSocket;

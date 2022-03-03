@@ -1,5 +1,6 @@
 const socketIo = require("socket.io");
 const { sequelize } = require("../models");
+const Message = require('../models').Message
 
 const users = new Map();
 const userSockets = new Map()
@@ -35,8 +36,8 @@ const SocketServer = (server) => {
 
       for (let i = 0; i < chatters.length; i++) {
         if (users.has(chatters[i])) {
-          const chatter = user.get(chatters[i]);
-          chatters.sockets.forEach((socket) => {
+          const chatter = users.get(chatters[i]);
+          chatter.sockets.forEach((socket) => {
             try {
               io.to(socket).emit("online", user);
             } catch (e) {}
@@ -54,6 +55,40 @@ const SocketServer = (server) => {
 
       io.to(socket.id).emit("typing", "User typing...");
     });
+
+    socket.on("message", async (message) => {
+      let sockets = []
+
+      if(users.has(message.fromUser.id)) {
+        sockets = users.get(message.fromUser.id).sockets
+      }
+
+      message.toUserId.forEach(id => {
+        if(users.has(id)) {
+          sockets = [...sockets, ...users.get(id).sockets]
+        }
+      })
+
+      try {
+        const msg = {
+          type: message.type,
+          fromUserId : message.fromUser.id,
+          chatId: message.chatId,
+          message: message.message
+        }
+
+        const saveMessage = await Message.create(msg)
+        message.User = message.fromUser
+        message.fromUserId = message.fromUser.id
+        message.id = saveMessage.id
+        delete message.fromUser
+        sockets.forEach(socket => {
+          io.to(socket).emit('received',message)
+        })
+      } catch (e) {
+        
+      }
+    })
 
     socket.on('disconnect', async () => {
 
