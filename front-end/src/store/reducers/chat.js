@@ -29,6 +29,8 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         currentChat: payload,
+        scrollBottom: state.scrollBottom + 1,
+        newMessage: { chatId: null, seen: null },
       };
     case FRIENDS_ONLINE: {
       const chatsCopy = state.chats.map((chat) => {
@@ -126,10 +128,10 @@ const chatReducer = (state = initialState, action) => {
     }
 
     case RECEIVED: {
-      const { userId, message } = payload
-      let currentChatCopy = { ...state.currentChat }
-      let newMessage = { ...state.newMessage }
-      let scrollBottom = state.scrollBottom
+      const { userId, message } = payload;
+      let currentChatCopy = { ...state.currentChat };
+      let newMessage = { ...state.newMessage };
+      let scrollBottom = state.scrollBottom;
 
       const chatsCopy = state.chats.map((chat) => {
         if (message.chatId === chat.id) {
@@ -162,7 +164,6 @@ const chatReducer = (state = initialState, action) => {
           chats: chatsCopy,
           currentChat: currentChatCopy,
           newMessage,
-          
         };
       }
       return {
