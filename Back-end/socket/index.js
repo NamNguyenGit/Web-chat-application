@@ -81,6 +81,7 @@ const SocketServer = (server) => {
         message.User = message.fromUser
         message.fromUserId = message.fromUser.id
         message.id = saveMessage.id
+        message.message = saveMessage.message
         delete message.fromUser
         sockets.forEach(socket => {
           io.to(socket).emit('received',message)

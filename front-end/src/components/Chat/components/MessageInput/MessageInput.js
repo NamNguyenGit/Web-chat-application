@@ -1,20 +1,24 @@
 import "./MessageInput.scss";
-import { BsEmojiSmile } from "react-icons/bs";
-import { useState } from "react";
+import { BsEmojiSmile, BsCardImage } from "react-icons/bs";
+import { useState, useRef } from "react";
 import { useSelector } from "react-redux";
+import { AiOutlineCloudUpload,AiFillDelete } from "react-icons/ai";
+import ChatServices from "../../../../services/chatServices";
+
 
 const MessageInput = ({ chat }) => {
   const user = useSelector((state) => state.authReducer.user);
 
   const [message, setMessage] = useState("");
+  const fileUpload = useRef()
   const [image, setImage] = useState("");
-  const socket = useSelector(state=>state.chatReducer.socket)
+  const socket = useSelector((state) => state.chatReducer.socket);
 
   const handleMessage = (e) => {
     const value = e.target.value;
     setMessage(value);
 
-    // notify user is typing
+    
   };
 
   const handleKeyDown = (e, imageUpload) => {
@@ -29,21 +33,50 @@ const MessageInput = ({ chat }) => {
       fromUser: user,
       toUserId: chat.Users.map((user) => user.id),
       chatId: chat.id,
-      message: imageUpload ? image : message,
+      message: imageUpload ? imageUpload : message,
     };
 
     setMessage("");
     setImage("");
 
     // send message with socket
-    socket.emit('message',msg)
+    socket.emit("message", msg);
+
+
   };
+
+  const handleImageUpload = () => {
+    const formData = new FormData()
+    formData.append('id', chat.id)
+    formData.append('image', image)
+
+    ChatServices.uploadImage(formData)
+    .then(image => {
+      sendMessage(image)
+    })
+    .catch(err => console.log(err))
+
+  }
 
   return (
     <>
       <div id="input-container">
+        <div id="image-upload-container">
+          <div></div>
+          <div id="image-upload">
+            {image.name ? (
+              <div id="image-details">
+                <p className="m-0">{image.name}</p>
+                <AiOutlineCloudUpload className="fa-icon" onClick={handleImageUpload} />
+                <AiFillDelete className="fa-icon" onClick={() => setImage('')} />
+              </div>
+            ) : null}
+            <BsCardImage onClick={() => fileUpload.current.click()} className="fa-icon" />
+          </div>
+        </div>
         <div id="message-input">
           <input
+            value={message}
             type="text"
             placeholder="Message..."
             onChange={(e) => handleMessage(e)}
@@ -51,6 +84,8 @@ const MessageInput = ({ chat }) => {
           />
           <BsEmojiSmile className="fa-icon" />
         </div>
+
+        <input id="chat-image" ref={fileUpload} type="file" onChange={e => setImage(e.target.files[0])} />
       </div>
     </>
   );
