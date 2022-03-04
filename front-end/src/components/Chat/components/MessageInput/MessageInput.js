@@ -1,19 +1,23 @@
 import "./MessageInput.scss";
 import { BsEmojiSmile, BsCardImage } from "react-icons/bs";
-import { useState, useRef } from "react";
-import { useSelector } from "react-redux";
-import { AiOutlineCloudUpload, AiFillDelete } from "react-icons/ai";
+import { useState, useRef, useEffect } from "react";
+import { useSelector,useDispatch } from "react-redux";
+import { AiOutlineCloudUpload, AiFillDelete,AiFillBell } from "react-icons/ai";
 import ChatServices from "../../../../services/chatServices";
 import { Picker } from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
+import { incrementScroll } from "../../../../store/actions/chat";
 
 const MessageInput = ({ chat }) => {
-  const user = useSelector((state) => state.authReducer.user);
 
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.authReducer.user);
+  const newMessage = useSelector((state => state.chatReducer.newMessage))
   const [message, setMessage] = useState("");
   const fileUpload = useRef();
   const msgInput = useRef();
   const [image, setImage] = useState("");
+  const [showNewMsg,setShowNewMsg] = useState(false)
   const [showEmoji, setShowEmoji] = useState(false);
 
   const socket = useSelector((state) => state.chatReducer.socket);
@@ -88,11 +92,39 @@ const MessageInput = ({ chat }) => {
     msgInput.current.selectionEnd = endPosition + emojiLength
   };
 
+  useEffect(() => {
+    if(!newMessage.seen && newMessage.chatId ===chat.id) {
+      const msgBox = document.getElementById("msg-box")
+      if(msgBox.scrollTop > msgBox.scrollHeight * 0.3) {
+        dispatch(incrementScroll())
+      } else {
+        setShowNewMsg(true)
+      }
+    }
+    else {
+      setShowNewMsg(false)
+    }
+  },[newMessage, dispatch])
+
+  const handleShowNewMsg = () => {
+    dispatch(incrementScroll())
+    setShowNewMsg(false)
+  }
+
   return (
     <>
       <div id="input-container">
         <div id="image-upload-container">
-          <div></div>
+          <div>
+            {
+              showNewMsg
+              ? <div id="message-notification" onClick={handleShowNewMsg}>
+                <AiFillBell className="fa-icon"/>
+                <p className="m-0">new message</p>
+              </div>
+              : null
+            }
+          </div>
           <div id="image-upload">
             {image.name ? (
               <div id="image-details">
