@@ -3,6 +3,7 @@ import Friends from "../Friends/Friends";
 import { setCurrentChat } from "../../../../store/actions/chat";
 import { useState,Fragment } from "react";
 import Modal from "../../../Modal/Modal"
+import ChatServices from "../../../../services/chatServices";
 import "./FriendList.scss";
 
 const FriendList = () => {
@@ -19,7 +20,8 @@ const FriendList = () => {
   };
 
   const searchFriends = (e) => {
-    // chat service
+    ChatServices.searchUsers(e.target.value)
+      .then(res=> setSuggestion(res))
   }
 
   const addNewFriends = (id) => {
@@ -31,7 +33,7 @@ const FriendList = () => {
       <div id="friends" className="shadow-light">
         <div id="title">
           <h3 className="m-0">Friends</h3>
-          <button>Add</button>
+          <button onClick={() => setShowFriendsModal(true)}>Add</button>
         </div>
         <hr />
         <div id="friends-box">
@@ -51,7 +53,7 @@ const FriendList = () => {
         </div>
         {
           showFriendsModal && 
-          <Modal >
+          <Modal click={() => setShowFriendsModal(false)} >
             <Fragment key='header'>
                 <h3 className="m-0">Create new chat</h3>
             </Fragment>
@@ -63,8 +65,8 @@ const FriendList = () => {
             <div id="suggestions">
               {
                 suggestion.map(user => {
-                  return <div className="suggestion">
-                        <p className="m-0">{user.FirstName} {user.LastName}</p>
+                  return <div key={user.id} className="suggestion">
+                        <p className="m-0" >{user.firstName} {user.lastName}</p>
                         <button onClick={() => addNewFriends(user.id)}>ADD</button>
                   </div>
                 })

@@ -38,6 +38,20 @@ const ChatServices = {
         throw err;
       });
   },
+
+  searchUsers: (term) => {
+    return API.get('/users/search-users', {
+        params: {
+            term
+        }
+    })
+        .then(({ data }) => {
+            return data
+        })
+        .catch(err => {
+            throw err
+        })
+},
 };
 
 export default ChatServices;
