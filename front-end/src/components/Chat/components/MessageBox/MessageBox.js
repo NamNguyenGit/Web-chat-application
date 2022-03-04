@@ -1,11 +1,12 @@
 import "./MessageBox.scss";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Messenger from "../Messenger/Messenger";
 import { useSelector } from "react-redux";
 
 const MessageBox = ({ chat }) => {
   const user = useSelector((state) => state.authReducer.user);
 
+  const [loading,setLoading] = useState(false)
   const scrollBottom = useSelector((state) => state.chatReducer.scrollBottom);
   const senderTyping = useSelector((state) => state.chatReducer.senderTyping);
   const msgBox = useRef();
@@ -20,8 +21,20 @@ const MessageBox = ({ chat }) => {
     msgBox.current.scrollTop = value;
   };
 
+  const handleInfiniteScroll = e => {
+    if(e.target.scrollUp === 0) {
+     
+      setLoading(true)
+      const pagination = chat.pagination
+      const page = typeof pagination === 'undefined' ? 1 : pagination.page
+
+      //dispatch
+
+    }
+  }
+
   return (
-    <div id="msg-box" ref={msgBox}>
+    <div onScroll={handleInfiniteScroll} id="msg-box" ref={msgBox}>
       {chat.Messages.map((message, i) => {
         return (
           <Messenger

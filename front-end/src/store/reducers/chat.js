@@ -6,7 +6,8 @@ import {
   FRIEND_ONLINE,
   SET_SOCKET,
   RECEIVED,
-  SENDER_TYPING
+  SENDER_TYPING,
+  PAGINATE_MESSAGE,
 } from "../actions/chat";
 
 const initialState = {
@@ -192,6 +193,10 @@ const chatReducer = (state = initialState, action) => {
        ...state,
        senderTyping: payload
      }
+    }
+
+    case PAGINATE_MESSAGE: {
+      
     }
 
     default: {
