@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Friends from "../Friends/Friends";
 import { setCurrentChat } from "../../../../store/actions/chat";
 import { useState,Fragment } from "react";
-import Modal from "../../../Modal/Modal+"
+import Modal from "../../../Modal/Modal"
 import "./FriendList.scss";
 
 const FriendList = () => {
